@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <h3>Books</h3>
+                <button class="btn btn-primary" onclick="bookGet()">Get</button>
+                <button class="btn btn-primary" onclick="bookPost()">Post</button>
+                <br>
+                <textarea class="form-control mt-2" rows="3" id="getBookTextarea" placeholder="Book JSON"></textarea>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <h3>Authors</h3>
+                <button class="btn btn-primary" onclick="authorGet()">Get</button>
+                <button class="btn btn-primary" onclick="authorPost()">Post</button>
+                <br>
+                <textarea class="form-control mt-2" rows="3" id="getAuthorTextarea" placeholder="Author JSON"></textarea>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <h3>Genres</h3>
+                <button class="btn btn-primary" onclick="genresGet()">Get</button>
+                <button class="btn btn-primary" onclick="genrePost()">Post</button>
+                <br>
+                <textarea class="form-control mt-2" rows="3" id="getGenresTextarea" placeholder="Genre JSON"></textarea>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <h3>Genres Details</h3>
+                <span>Genre ID</span>
+                <input type="text" class="form-control" id="idgen">
+                <button class="btn btn-primary mt-2" onclick="genresGetDetail()">Get</button>
+                <button class="btn btn-danger mt-2" onclick="genresDelete()">Delete</button>
+                <br>
+                <textarea class="form-control mt-2" rows="3" id="getGenresDetailsTextarea" placeholder="Genre Details"></textarea>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <h3>Authors Details</h3>
+                <span>Author ID</span>
+                <input type="text" class="form-control" id="idauth">
+                <button class="btn btn-primary mt-2" onclick="authorGetDetail()">Get</button>
+                <button class="btn btn-danger mt-2" onclick="authorsDelete()">Delete</button>
+                <br>
+                <textarea class="form-control mt-2" rows="3" id="getAuthorDetailsTextarea" placeholder="Author Details"></textarea>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <h3>Export Genres</h3>
+                <span>Genre ID</span>
+                <input type="text" class="form-control" id="idgenEx">
+                <button class="btn btn-primary mt-2" onclick="genresExport()">Export</button>
+                <br>
+                <textarea class="form-control mt-2" rows="3" id="genresExportTextarea" placeholder="Exported CSV Data"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Your JavaScript code here
+            
+
+    
+    function bookGet(){
+        
+    
+        fetch('http://127.0.0.1:8000/api/api/books/', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token '+ localStorage.getItem("token")
+            },
+          
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+            console.log("response",data)
+            document.getElementById("getBookTextarea").value=JSON.stringify(data)
+            
+        });
+    }
+
+    function bookPost(){
+const data = JSON.parse(document.getElementById('getBookTextarea').value);
+
+
+
+fetch('http://127.0.0.1:8000/api/api/books/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+    console.log("response", data);
+});
+}
+
+
+    // function loginPage(){
+    //     const username = document.getElementById('exampleInputEmail1').value;
+    //     const password = document.getElementById('exampleInputPassword1').value;
+    //     console.log("response sss")
+    
+    //     // Make a POST request to LoginAPIView
+    //     fetch('http://127.0.0.1:8000/api/api/login/', { 
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+                
+    //         },
+    //         body: JSON.stringify({ username, password })
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         
+    //         console.log("response",data)
+            
+    //         localStorage.setItem('token', data.token);
+    
+    //     });
+    // }
+
+
+    function authorGet(){
+    
+        fetch('http://127.0.0.1:8000/api/api/authors/', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token '+ localStorage.getItem("token")
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("response",data)
+            
+            document.getElementById("getAuthorTextarea").value=JSON.stringify(data)
+    
+        });
+    }
+
+function authorPost(){
+const data = JSON.parse(document.getElementById('getAuthorTextarea').value);
+
+if (!data.name || !data.email || !data.phone || !data.city) {
+    console.error("Missing required fields");
+    return;
+}
+
+fetch('http://127.0.0.1:8000/api/api/authors/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+    console.log("response", data);
+});
+}
+
+
+    function genresGet(){
+    
+        fetch('http://127.0.0.1:8000/api/api/genres/', { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token '+ localStorage.getItem("token")
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("response",data)
+            
+            document.getElementById("getGenresTextarea").value=JSON.stringify(data)
+    
+        });
+    }
+
+    function genrePost(){
+const data = JSON.parse(document.getElementById('getGenresTextarea').value);
+
+
+fetch('http://127.0.0.1:8000/api/api/genres/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+    console.log("response", data);
+});
+}
+
+    function genresGetDetail(){
+        id = document.getElementById("idgen").value
+    
+        fetch(`http://127.0.0.1:8000/api/api/genres/${id}`, { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token '+ localStorage.getItem("token")
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+            console.log("response",data)
+            
+            document.getElementById("getGenresDetailsTextarea").value=JSON.stringify(data)
+            
+    
+        });
+    }
+    function genresDelete(){
+const id = document.getElementById("idgen").value;
+
+fetch(`http://127.0.0.1:8000/api/api/genres/${id}`, {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+})
+.then(response => {
+    if (response.ok) {
+        console.log("Genre deleted successfully");
+    } else {
+        console.error("Error deleting genre");
+    }
+})
+.catch(error => {
+    console.error("Error:", error);
+});
+}
+
+
+
+
+    function bookGetDetail(){
+        id = document.getElementById("idbook").value
+    
+        fetch(`http://127.0.0.1:8000/api/api/books/${id}`, { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token '+ localStorage.getItem("token")
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+            console.log("response",data)
+            
+            document.getElementById("getBookDetailsTextarea").value=JSON.stringify(data)
+            
+    
+        });
+    }
+
+    function booksDelete(){
+const id = document.getElementById("idbook").value;
+
+fetch(`http://127.0.0.1:8000/api/api/books/${id}`, {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+})
+.then(response => {
+    if (response.ok) {
+        console.log("book deleted successfully");
+    } else {
+        console.error("Error deleting book");
+    }
+})
+.catch(error => {
+    console.error("Error:", error);
+});
+}
+
+
+
+    function authorGetDetail(){
+        id = document.getElementById("idauth").value
+    
+        fetch(`http://127.0.0.1:8000/api/api/authors/${id}`, { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token '+ localStorage.getItem("token")
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+            console.log("response",data)
+            
+            document.getElementById("getAuthorDetailsTextarea").value=JSON.stringify(data)
+            
+    
+        });
+    }
+
+
+    function authorsDelete(){
+const id = document.getElementById("idauth").value;
+
+fetch(`http://127.0.0.1:8000/api/api/authors/${id}`, {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+})
+.then(response => {
+    if (response.ok) {
+        console.log("author deleted successfully");
+    } else {
+        console.error("Error deleting author");
+    }
+})
+.catch(error => {
+    console.error("Error:", error);
+});
+}
+
+
+    function genresExport() {
+const id = document.getElementById("idgenEx").value;
+console.log(id);
+
+fetch(`http://127.0.0.1:8000/api/api/genres/${id}/export/`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'text/csv', 
+        'Authorization': 'Token ' + localStorage.getItem("token")
+    },
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.text();  
+})
+.then(csvData => {
+    const blob = new Blob([csvData], { type: 'text/csv' });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'books.csv';  
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+}
+
+
+    </script>
+</body>
+</html>
+
